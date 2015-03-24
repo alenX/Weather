@@ -129,7 +129,7 @@ public class WeatherDBHelp {
                 if (type.equals(BigDecimal.class)) {
                     field.set(c, new BigDecimal(value));
                 } else if (type.equals(int.class)) {
-                    field.set(c, Integer.valueOf(columnName));
+                    field.set(c, Integer.valueOf(value));
                 } else {
                     field.set(c, value);
                 }
@@ -176,7 +176,7 @@ public class WeatherDBHelp {
             values.put("county_name", cacheCounty.getCountyName());
             values.put("num", cacheCounty.getNum());
             values.put("weather_code", cacheCounty.getWeatherCode());
-            db.insert("County", null, values);
+            db.insert("CacheCounty", null, values);
         }
     }
 

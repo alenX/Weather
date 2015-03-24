@@ -139,7 +139,8 @@ public class ChooseCityAct extends Activity {
                                             if (str != null && str.length > 0) {
                                                 String weatherCode = str[1];
                                                 CacheCounty cacheCounty = new CacheCounty();
-                                                cacheCounty.setNum(dbHelp.getMaxNumCacheCounty()+1);
+                                                ArrayList<CacheCounty> arr = dbHelp.loadCacheCounties();
+                                                cacheCounty.setNum(arr.size()+1);
                                                 cacheCounty.setCountyCode(county.getCountyCode());
                                                 cacheCounty.setCountyName(county.getCountyName());
                                                 cacheCounty.setWeatherCode(weatherCode);

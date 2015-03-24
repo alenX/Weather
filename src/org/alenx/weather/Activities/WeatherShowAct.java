@@ -68,12 +68,12 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
 
         layout = (RelativeLayout) findViewById(R.id.detail_info);
 
-        aCacheCounties = dbHelp.loadCacheCounties();//加载收藏夹城市信息
-
         dbHelp = WeatherDBHelp.getInstance(this);
+        aCacheCounties = dbHelp.loadCacheCounties();//加载收藏夹城市信息
         String countyCode = getIntent().getStringExtra("county_code");//获取传递的参数
         county_name_title = getIntent().getStringExtra("county_name_title");//获取传递的参数
-
+        Log.v("WeatherShowAct",countyCode);
+        Log.v("WeatherShowAct",county_name_title);
 
         if (!TextUtils.isEmpty(countyCode)) {
             mPublishText.setText("正在同步...");
@@ -142,7 +142,7 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
                 return false;
             }
 
-            int max_num = aCacheCounties.size()+1;
+            int max_num = aCacheCounties.size();
 
             int num = 0;
 
@@ -156,12 +156,12 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
             }
             //HashMap<String,String> hashMap = dbHelp.getNextCache(num);
             cacheCounty.setCountyName(aCacheCounties.get(num).getCountyName());
-            cacheCounty.setCountyName(aCacheCounties.get(num).getCountyCode());
+            cacheCounty.setCountyCode(aCacheCounties.get(num).getCountyCode());
             Intent intent = new Intent(getApplicationContext(), WeatherShowAct.class);
             intent.putExtra("county_code", cacheCounty.getCountyCode());
             intent.putExtra("county_name_title", cacheCounty.getCountyName());
             startActivity(intent);
-            return false;
+            return true;
         }
 
 
