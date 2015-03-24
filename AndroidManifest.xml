@@ -21,15 +21,10 @@
         </activity>
         <!--<activity android:name=".Activities.ChooseCityAct"/>-->
         <activity android:name=".Activities.WeatherShowAct"/>
-
-
-
+        <activity android:name=".LoadingAct"/>
         <service android:name="org.alenx.weather.Services.WeatherAutoUpdateSer" >
-
         </service>
-
         <receiver android:name="org.alenx.weather.Receiver.WeatherAutoUpdateRec" >
-
         </receiver>
     </application>
 </manifest>
