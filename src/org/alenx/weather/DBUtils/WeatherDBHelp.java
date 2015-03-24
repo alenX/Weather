@@ -8,8 +8,6 @@ import android.util.Log;
 import org.alenx.weather.Models.*;
 import org.alenx.weather.Utils.Annos.Column;
 
-import java.io.File;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -177,6 +175,17 @@ public class WeatherDBHelp {
             values.put("num", cacheCounty.getNum());
             values.put("weather_code", cacheCounty.getWeatherCode());
             db.insert("CacheCounty", null, values);
+        }
+    }
+
+    public void saveOfflineCounty(OfflineCounty offlineCounty) {
+        if (offlineCounty != null) {
+            ContentValues values = new ContentValues();
+            values.put("city_id", offlineCounty.getCityId());
+            values.put("county_code", offlineCounty.getCountyCode());
+            values.put("weather_info", offlineCounty.getWeatherInfo().toString());
+            values.put("last_update_time", offlineCounty.getLastUpdateTime());
+            db.insert("Offline_County", null, values);
         }
     }
 

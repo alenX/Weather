@@ -9,11 +9,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class HttpUtils {
-    public static void sendHttpRequest(final String path, final HttpRequestListener listener) {
+    public static void sendHttpRequest(final String path, final IHttpRequestListener listener) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                HttpURLConnection connection = null;
+                HttpURLConnection connection;
                 try {
                     URL url = new URL(path);
                     connection = (HttpURLConnection) url.openConnection();
@@ -22,7 +22,7 @@ public class HttpUtils {
                     connection.setReadTimeout(8000);
                     InputStream in = connection.getInputStream();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                    StringBuffer response = new StringBuffer();
+                    StringBuilder response = new StringBuilder();
                     String line;
                     while ((line = reader.readLine()) != null) {
                         response.append(line);

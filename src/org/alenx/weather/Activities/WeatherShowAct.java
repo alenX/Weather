@@ -3,7 +3,6 @@ package org.alenx.weather.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.gesture.GestureOverlayView;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -18,15 +17,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import org.alenx.weather.DBUtils.WeatherDBHelp;
 import org.alenx.weather.Models.CacheCounty;
-import org.alenx.weather.Models.County;
 import org.alenx.weather.R;
 import org.alenx.weather.Services.WeatherAutoUpdateSer;
-import org.alenx.weather.Utils.HttpRequestListener;
 import org.alenx.weather.Utils.HttpUtils;
+import org.alenx.weather.Utils.IHttpRequestListener;
 import org.alenx.weather.Utils.Utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class WeatherShowAct extends Activity implements View.OnClickListener {
 
@@ -43,11 +40,13 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
 
     RelativeLayout layout;
 
-    WeatherDBHelp dbHelp ;
+    WeatherDBHelp dbHelp;
 
     /*收藏夹城市*/
     ArrayList<CacheCounty> aCacheCounties;
 
+
+    String countyCode;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,10 +69,10 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
 
         dbHelp = WeatherDBHelp.getInstance(this);
         aCacheCounties = dbHelp.loadCacheCounties();//加载收藏夹城市信息
-        String countyCode = getIntent().getStringExtra("county_code");//获取传递的参数
+        countyCode = getIntent().getStringExtra("county_code");//获取传递的参数
         county_name_title = getIntent().getStringExtra("county_name_title");//获取传递的参数
-        Log.v("WeatherShowAct",countyCode);
-        Log.v("WeatherShowAct",county_name_title);
+        Log.v("WeatherShowAct", countyCode);
+        Log.v("WeatherShowAct", county_name_title);
 
         if (!TextUtils.isEmpty(countyCode)) {
             mPublishText.setText("正在同步...");
@@ -92,9 +91,10 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
     }
 
 
-    class WeatherGesture implements GestureDetector.OnGestureListener,View.OnTouchListener {
+    class WeatherGesture implements GestureDetector.OnGestureListener, View.OnTouchListener {
 
-        GestureDetector detector = new GestureDetector(getApplicationContext(),this);
+        GestureDetector detector = new GestureDetector(getApplicationContext(), this);
+
         @Override
         public boolean onDown(MotionEvent e) {
             return true;
@@ -123,7 +123,7 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 
-            int dx = (int)(e2.getX()-e1.getX());
+            int dx = (int) (e2.getX() - e1.getX());
             CacheCounty cacheCounty = new CacheCounty();
             cacheCounty.setCountyCode(getIntent().getStringExtra("county_code"));
 
@@ -131,14 +131,14 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
             /*int max_num = dbHelp.getMaxNumCacheCounty();
             int current_num = dbHelp.getCountyNum(cacheCounty.getCountyCode());
             int num=0;*/
-            int current_num =-1 ;
-            for (int i = 0;i<aCacheCounties.size();i++){
-                if (aCacheCounties.get(i).getCountyCode().equals(cacheCounty.getCountyCode())){
+            int current_num = -1;
+            for (int i = 0; i < aCacheCounties.size(); i++) {
+                if (aCacheCounties.get(i).getCountyCode().equals(cacheCounty.getCountyCode())) {
                     current_num = i;
                     break;
                 }
             }
-            if (current_num==-1){
+            if (current_num == -1) {
                 return false;
             }
 
@@ -146,13 +146,13 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
 
             int num = 0;
 
-            if (Math.abs(dx)>10&&dx>0){
-                Log.v("aa","→");//向前翻
-                num= (current_num-1)%max_num;
+            if (Math.abs(dx) > 10 && dx > 0) {
+                Log.v("aa", "→");//向前翻
+                num = (current_num - 1) % max_num;
             }
-            if (Math.abs(dx)>10&&dx<0){
-                Log.v("aa","←");//向后翻
-                num= (current_num+1)%max_num;
+            if (Math.abs(dx) > 10 && dx < 0) {
+                Log.v("aa", "←");//向后翻
+                num = (current_num + 1) % max_num;
             }
             //HashMap<String,String> hashMap = dbHelp.getNextCache(num);
             cacheCounty.setCountyName(aCacheCounties.get(num).getCountyName());
@@ -163,8 +163,6 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
             startActivity(intent);
             return true;
         }
-
-
 
 
         @Override
@@ -211,23 +209,24 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
 
 
     public void queryFromServer(String address, final String type) {
-        HttpUtils.sendHttpRequest(address, new HttpRequestListener() {
+        HttpUtils.sendHttpRequest(address, new IHttpRequestListener() {
             @Override
             public void onExecute(String response) {
                 if ("countyCode".equals(type)) {
                     if (!TextUtils.isEmpty(response)) {//TODO
                         String[] str = response.split("\\|");
-                        if (str != null && str.length > 0) {
+                        if ( str.length > 0) {
                             String weatherCode = str[1];
                             queryWeatherInfo(weatherCode);
                         }
                     }
                 } else if ("weatherCode".equals(type)) {
-                    Utils.handleWeatherResponse(WeatherShowAct.this, response);
+                    Utils.handleWeatherResponse(WeatherShowAct.this, response, dbHelp, countyCode);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             showWeather();
+
                         }
                     });
                 }
@@ -235,12 +234,18 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
 
             @Override
             public void onError(Exception e) {
+//                boolean isQuery = iep.queryFromOffline();
+               /* if (!isQuery) {
+
+                }*/
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         mPublishText.setText("同步失败");
                     }
                 });
+
             }
         });
     }

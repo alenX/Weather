@@ -1,10 +1,8 @@
 package org.alenx.weather.DBUtils;
 
 import android.content.Context;
-import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 /*Models建表部分*/
 public class WeatherDBOpenHelp extends SQLiteOpenHelper {
@@ -42,6 +40,16 @@ public class WeatherDBOpenHelp extends SQLiteOpenHelper {
             + "county_name text, "
             + "weather_code text)";
 
+
+    /*OfflineCounty表建表sql*/
+    public static final String CREATE_OFFLINE_COUNTY ="create table OfflineCounty ("
+            + "id integer primary key autoincrement, "
+            + "city_id text,"
+            + "county_code text, "
+            + "last_update_time text, "
+            + "weather_code text)";
+
+
     public WeatherDBOpenHelp(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
     }
@@ -57,6 +65,7 @@ public class WeatherDBOpenHelp extends SQLiteOpenHelper {
         db.execSQL(CREATE_COUNTY);
 
         db.execSQL(CREATE_CACHE_COUNTY);
+        db.execSQL(CREATE_OFFLINE_COUNTY);
     }
 
     @Override

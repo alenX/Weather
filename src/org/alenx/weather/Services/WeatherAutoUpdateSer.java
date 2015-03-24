@@ -9,8 +9,9 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import org.alenx.weather.DBUtils.WeatherDBHelp;
 import org.alenx.weather.Receiver.WeatherAutoUpdateRec;
-import org.alenx.weather.Utils.HttpRequestListener;
+import org.alenx.weather.Utils.IHttpRequestListener;
 import org.alenx.weather.Utils.HttpUtils;
 import org.alenx.weather.Utils.Utils;
 
@@ -42,14 +43,15 @@ public class WeatherAutoUpdateSer extends Service {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
 
         String weatherCode = sp.getString("weather_code", "");
+        final String countyCode = sp.getString("county_code", "");//TODO
 
         String address = "http://www.weather.com.cn/data/cityinfo/" + weatherCode + ".html";
 
-        HttpUtils.sendHttpRequest(address, new HttpRequestListener() {
+        HttpUtils.sendHttpRequest(address, new IHttpRequestListener() {
             @Override
             public void onExecute(String response) {
                 Log.d("TAG", response);
-                Utils.handleWeatherResponse(WeatherAutoUpdateSer.this, response);
+                Utils.handleWeatherResponse(WeatherAutoUpdateSer.this, response, WeatherDBHelp.getInstance(getApplicationContext()),countyCode);
             }
 
             @Override

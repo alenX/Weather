@@ -1,5 +1,5 @@
 package org.alenx.weather.Utils;
-public interface HttpRequestListener {
+public interface IHttpRequestListener {
     public void onExecute(String response);
     public void onError(Exception e);
 }

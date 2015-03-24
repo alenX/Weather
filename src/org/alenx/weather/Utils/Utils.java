@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import org.alenx.weather.DBUtils.WeatherDBHelp;
 import org.alenx.weather.Models.City;
 import org.alenx.weather.Models.County;
+import org.alenx.weather.Models.OfflineCounty;
 import org.alenx.weather.Models.Province;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,7 +22,7 @@ public class Utils {
     public synchronized static boolean handleProvince(WeatherDBHelp db, String response) {
         if (!TextUtils.isEmpty(response)) {
             String[] allPros = response.split(",");
-            if (allPros != null && allPros.length > 0) {
+            if (allPros.length > 0) {
                 for (String p : allPros) {
                     String[] pInfo = p.split("\\|");
                     Province province = new Province();
@@ -39,7 +40,7 @@ public class Utils {
     public synchronized static boolean handleCity(WeatherDBHelp db, String response, int provinceId) {
         if (!TextUtils.isEmpty(response)) {
             String[] allCities = response.split(",");
-            if (allCities != null && allCities.length > 0) {
+            if (allCities.length > 0) {
                 for (String c : allCities) {
                     String[] cityObj = c.split("\\|");
                     City city = new City();
@@ -59,7 +60,7 @@ public class Utils {
     public synchronized static boolean handleCounty(WeatherDBHelp db, String response, int cityId) {
         if (!TextUtils.isEmpty(response)) {
             String[] allCounties = response.split(",");
-            if (allCounties != null && allCounties.length > 0) {
+            if ( allCounties.length > 0) {
                 for (String c : allCounties) {
                     String[] countyObj = c.split("\\|");
                     County county = new County();
@@ -75,7 +76,7 @@ public class Utils {
         return false;
     }
 
-    public static void handleWeatherResponse(Context context, String response) {
+    public static void handleWeatherResponse(Context context, String response, WeatherDBHelp db, String countyCode) {
 
         try {
             JSONObject jsonObject = new JSONObject(response);
@@ -86,26 +87,37 @@ public class Utils {
             String temp2 = weatherInfo.getString("temp2");
             String weatherDesp = weatherInfo.getString("weather");
             String publishTime = weatherInfo.getString("ptime");
-            saveWeatherInfo(context,cityName,weatherCode,temp1,temp2,weatherDesp,publishTime);
+            saveWeatherInfo(context, cityName, weatherCode, temp1, temp2, weatherDesp, publishTime, countyCode);
+
+            /*同时将信息保存到离线城市信息表中*/
+            OfflineCounty offlineCounty = new OfflineCounty();
+            offlineCounty.setCityId(weatherInfo.getString("cityid"));
+            offlineCounty.setWeatherInfo(weatherInfo);
+            offlineCounty.setCountyCode(countyCode);
+            SimpleDateFormat sdf = new SimpleDateFormat("M月d日", Locale.CHINA);
+            offlineCounty.setLastUpdateTime(sdf.format(new Date()));
+            db.saveOfflineCounty(offlineCounty);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
+
     public static void saveWeatherInfo(Context context, String cityName, String weatherCode,
-                                       String temp1, String temp2 , String weatherDesp, String publishTime) {
+                                       String temp1, String temp2, String weatherDesp, String publishTime, String countyCode) {
 
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年M月d日", Locale.CHINA);
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-        editor.putBoolean("city_selected",true);
+        editor.putBoolean("city_selected", true);
         editor.putString("city_name", cityName);
-        editor.putString("weather_code",weatherCode);
-        editor.putString("temp1",temp1);
-        editor.putString("temp2",temp2);
-        editor.putString("weatherDesp",weatherDesp);
-        editor.putString("publish_time",publishTime);
-        editor.putString("current_date",sdf.format(new Date()));
+        editor.putString("weather_code", weatherCode);
+        editor.putString("temp1", temp1);
+        editor.putString("temp2", temp2);
+        editor.putString("weatherDesp", weatherDesp);
+        editor.putString("publish_time", publishTime);
+        editor.putString("current_date", sdf.format(new Date()));
+        editor.putString("county_code", countyCode);
         editor.commit();
     }
 }

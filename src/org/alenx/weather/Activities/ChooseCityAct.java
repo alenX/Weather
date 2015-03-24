@@ -19,8 +19,8 @@ import org.alenx.weather.Models.City;
 import org.alenx.weather.Models.County;
 import org.alenx.weather.Models.Province;
 import org.alenx.weather.R;
-import org.alenx.weather.Utils.HttpRequestListener;
 import org.alenx.weather.Utils.HttpUtils;
+import org.alenx.weather.Utils.IHttpRequestListener;
 import org.alenx.weather.Utils.Utils;
 
 import java.util.ArrayList;
@@ -131,7 +131,7 @@ public class ChooseCityAct extends Activity {
 
                                 //TODO 将县城收藏夹
                                 String getWeatherCodePath = "http://www.weather.com.cn/data/list3/city" + county.getCountyCode() + ".xml";
-                                HttpUtils.sendHttpRequest(getWeatherCodePath, new HttpRequestListener() {
+                                HttpUtils.sendHttpRequest(getWeatherCodePath, new IHttpRequestListener() {
                                     @Override
                                     public void onExecute(String response) {
                                         if (!TextUtils.isEmpty(response)) {//TODO
@@ -140,16 +140,16 @@ public class ChooseCityAct extends Activity {
                                                 String weatherCode = str[1];
                                                 CacheCounty cacheCounty = new CacheCounty();
                                                 ArrayList<CacheCounty> arr = dbHelp.loadCacheCounties();
-                                                cacheCounty.setNum(arr.size()+1);
+                                                cacheCounty.setNum(arr.size() + 1);
                                                 cacheCounty.setCountyCode(county.getCountyCode());
                                                 cacheCounty.setCountyName(county.getCountyName());
                                                 cacheCounty.setWeatherCode(weatherCode);
-                                                if (dbHelp.isExists(cacheCounty.getCountyCode())){
-                                                    Toast.makeText(getApplicationContext(),"该城市已经收藏！",Toast.LENGTH_SHORT).show();
-                                                }else{
-                                                    if (cacheCounty.getNum()>=6){
-                                                        Toast.makeText(getApplicationContext(),"系统已经存在五个收藏的城市，无法继续收藏",Toast.LENGTH_SHORT).show();
-                                                    }else {
+                                                if (dbHelp.isExists(cacheCounty.getCountyCode())) {
+                                                    Toast.makeText(getApplicationContext(), "该城市已经收藏！", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    if (cacheCounty.getNum() >= 6) {
+                                                        Toast.makeText(getApplicationContext(), "系统已经存在五个收藏的城市，无法继续收藏", Toast.LENGTH_SHORT).show();
+                                                    } else {
                                                         dbHelp.saveCacheCounty(cacheCounty);
                                                     }
                                                 }
@@ -243,7 +243,7 @@ public class ChooseCityAct extends Activity {
             address = "http://www.weather.com.cn/data/list3/city.xml";
         }
         showProgressDialog();
-        HttpUtils.sendHttpRequest(address, new HttpRequestListener() {
+        HttpUtils.sendHttpRequest(address, new IHttpRequestListener() {
             @Override
             public void onExecute(String response) {
                 boolean result = false;
