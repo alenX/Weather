@@ -30,13 +30,9 @@ public class HttpUtils {
                     if (listener != null) {
                         listener.onExecute(response.toString());
                     }
-                } catch (MalformedURLException e) {
+                } catch (Exception e) {
                     if (listener != null) {
-                        listener.onError(e);
-                    }
-                } catch (IOException e) {
-                    if (listener != null) {
-                        listener.onError(e);
+                        listener.onError(e,path);
                     }
                 }
             }

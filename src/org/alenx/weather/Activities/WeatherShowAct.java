@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import org.alenx.weather.DBUtils.WeatherDBHelp;
 import org.alenx.weather.Models.CacheCounty;
+import org.alenx.weather.Models.OfflineCounty;
 import org.alenx.weather.R;
 import org.alenx.weather.Services.WeatherAutoUpdateSer;
 import org.alenx.weather.Utils.HttpUtils;
@@ -215,7 +216,7 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
                 if ("countyCode".equals(type)) {
                     if (!TextUtils.isEmpty(response)) {//TODO
                         String[] str = response.split("\\|");
-                        if ( str.length > 0) {
+                        if (str.length > 0) {
                             String weatherCode = str[1];
                             queryWeatherInfo(weatherCode);
                         }
@@ -233,19 +234,41 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onError(Exception e, String path) {
 //                boolean isQuery = iep.queryFromOffline();
-               /* if (!isQuery) {
+                /* if (!isQuery) {
 
                 }*/
+                //http://www.weather.com.cn/data/cityinfo/101300103.html
+                String weatherCode = path.contains("cityinfo") ? path.split("\\.")[3].split("\\/")[4] : "";
+                if (TextUtils.isEmpty(weatherCode)) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mPublishText.setText("同步失败");
+                        }
+                    });
+                } else {
+                    OfflineCounty offlineCounty = dbHelp.getOfflineCounty(countyCode);
+                    if (offlineCounty == null) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mPublishText.setText("同步失败");
+                            }
+                        });
+                    } else {
+                        Utils.handleWeatherOffline(WeatherShowAct.this, dbHelp.getOfflineCounty(countyCode).getWeatherInfo().toString(), dbHelp, countyCode);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showWeather();
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mPublishText.setText("同步失败");
+                            }
+                        });
                     }
-                });
 
+                }
             }
         });
     }

@@ -55,7 +55,7 @@ public class WeatherAutoUpdateSer extends Service {
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onError(Exception e,String path) {
 
             }
         });

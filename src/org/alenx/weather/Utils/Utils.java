@@ -103,6 +103,34 @@ public class Utils {
     }
 
 
+
+    public static void handleWeatherOffline(Context context, String response, WeatherDBHelp db, String countyCode) {
+
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONObject weatherInfo = jsonObject.getJSONObject("weatherinfo");
+            String cityName = weatherInfo.getString("city");
+            String weatherCode = weatherInfo.getString("cityid");
+            String temp1 = weatherInfo.getString("temp1");
+            String temp2 = weatherInfo.getString("temp2");
+            String weatherDesp = weatherInfo.getString("weather");
+            String publishTime = weatherInfo.getString("ptime");
+            saveWeatherInfo(context, cityName, weatherCode, temp1, temp2, weatherDesp, publishTime, countyCode);
+
+            /*同时将信息保存到离线城市信息表中*//*
+            OfflineCounty offlineCounty = new OfflineCounty();
+            offlineCounty.setCityId(weatherInfo.getString("cityid"));
+            offlineCounty.setWeatherInfo(weatherInfo);
+            offlineCounty.setCountyCode(countyCode);
+            SimpleDateFormat sdf = new SimpleDateFormat("M月d日", Locale.CHINA);
+            offlineCounty.setLastUpdateTime(sdf.format(new Date()));
+            db.saveOfflineCounty(offlineCounty);*/
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public static void saveWeatherInfo(Context context, String cityName, String weatherCode,
                                        String temp1, String temp2, String weatherDesp, String publishTime, String countyCode) {
 

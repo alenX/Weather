@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import org.alenx.weather.Models.*;
 import org.alenx.weather.Utils.Annos.Column;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -69,6 +71,29 @@ public class WeatherDBHelp {
         }
 
         return arrayList;
+    }
+
+    public OfflineCounty getOfflineCounty(String countyCode) {
+        Cursor cursor = db.query("OfflineCounty", null, "county_code = ?", new String[]{String.valueOf(countyCode)}, null, null, null);
+        OfflineCounty c = null;
+        if (cursor.moveToFirst()) {
+            do {
+                c = new OfflineCounty();
+                //TODO
+                c.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                c.setCityId(cursor.getString(cursor.getColumnIndex("city_id")));
+                c.setCountyCode(cursor.getString(cursor.getColumnIndex("county_code")));
+                try {
+                    c.setWeatherInfo(new JSONObject(cursor.getString(cursor.getColumnIndex("weather_info"))));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                c.setLastUpdateTime(cursor.getString(cursor.getColumnIndex("last_update_time")));
+
+
+            } while (cursor.moveToNext());
+        }
+        return c;
     }
 
     public ArrayList<County> loadCounty(int cityId) {
