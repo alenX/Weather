@@ -1,5 +1,6 @@
 # Weather
 An android app
 
+A Simple Weather app 
 
-An Simple Weather app 
+Thanks to weather.com.cn 
