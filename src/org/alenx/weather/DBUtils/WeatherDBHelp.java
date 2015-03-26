@@ -210,7 +210,7 @@ public class WeatherDBHelp {
             values.put("county_code", offlineCounty.getCountyCode());
             values.put("weather_info", offlineCounty.getWeatherInfo().toString());
             values.put("last_update_time", offlineCounty.getLastUpdateTime());
-            db.insert("Offline_County", null, values);
+            db.insert("OfflineCounty", null, values);
         }
     }
 

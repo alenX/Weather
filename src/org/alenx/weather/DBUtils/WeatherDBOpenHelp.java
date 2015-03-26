@@ -47,7 +47,7 @@ public class WeatherDBOpenHelp extends SQLiteOpenHelper {
             + "city_id text,"
             + "county_code text, "
             + "last_update_time text, "
-            + "weather_code text)";
+            + "weather_info text)";
 
 
     public WeatherDBOpenHelp(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {

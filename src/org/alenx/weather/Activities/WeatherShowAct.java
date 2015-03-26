@@ -1,6 +1,7 @@
 package org.alenx.weather.Activities;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -46,6 +47,8 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
     /*收藏夹城市*/
     ArrayList<CacheCounty> aCacheCounties;
 
+    ProgressDialog pd;
+
 
     String countyCode;
 
@@ -67,6 +70,7 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
         mRefreshButton = (Button) findViewById(R.id.refresh_weather);
 
         layout = (RelativeLayout) findViewById(R.id.detail_info);
+
 
         dbHelp = WeatherDBHelp.getInstance(this);
         aCacheCounties = dbHelp.loadCacheCounties();//加载收藏夹城市信息
@@ -156,12 +160,20 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
                 num = (current_num + 1) % max_num;
             }
             //HashMap<String,String> hashMap = dbHelp.getNextCache(num);
-            cacheCounty.setCountyName(aCacheCounties.get(num).getCountyName());
+            /*cacheCounty.setCountyName(aCacheCounties.get(num).getCountyName());
             cacheCounty.setCountyCode(aCacheCounties.get(num).getCountyCode());
             Intent intent = new Intent(getApplicationContext(), WeatherShowAct.class);
             intent.putExtra("county_code", cacheCounty.getCountyCode());
             intent.putExtra("county_name_title", cacheCounty.getCountyName());
-            startActivity(intent);
+            startActivity(intent);*/
+
+            pd = new ProgressDialog(WeatherShowAct.this);
+            pd.setMessage("正在加载中...");
+            pd.setCanceledOnTouchOutside(false);
+            pd.show();
+            mPublishText.setText("正在同步...");
+            mCityNameText.setText("正在同步...");
+            queryWeatherCode(aCacheCounties.get(num).getCountyCode());
             return true;
         }
 
@@ -275,8 +287,8 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
 
     public void showWeather() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(WeatherShowAct.this);
-//        mCityNameText.setText(sp.getString("city_name",""));
-        mCityNameText.setText(county_name_title);
+        mCityNameText.setText(sp.getString("city_name", ""));
+//        mCityNameText.setText(county_name_title);
         mTemp1Text.setText(sp.getString("temp1", ""));
         mTemp2Text.setText(sp.getString("temp2", ""));
         mWeatherDespText.setText(sp.getString("weatherDesp", ""));
@@ -285,7 +297,9 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
 
         weatherLayout.setVisibility(View.VISIBLE);
         mCityNameText.setVisibility(View.VISIBLE);
-
+        if (pd != null) {
+            pd.dismiss();
+        }
         Intent intent = new Intent(this, WeatherAutoUpdateSer.class);
         startService(intent);
     }

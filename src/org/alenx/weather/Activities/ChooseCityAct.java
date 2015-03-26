@@ -159,7 +159,7 @@ public class ChooseCityAct extends Activity {
                                     }
 
                                     @Override
-                                    public void onError(Exception e,String path) {
+                                    public void onError(Exception e, String path) {
 
                                     }
                                 });
@@ -274,7 +274,7 @@ public class ChooseCityAct extends Activity {
             }
 
             @Override
-            public void onError(Exception e,String path) {
+            public void onError(Exception e, String path) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
