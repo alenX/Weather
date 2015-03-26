@@ -1,11 +1,10 @@
 package org.alenx.weather.Utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import android.os.Environment;
+import android.util.Log;
+
+import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class HttpUtils {
@@ -32,10 +31,37 @@ public class HttpUtils {
                     }
                 } catch (Exception e) {
                     if (listener != null) {
-                        listener.onError(e,path);
+                        listener.onError(e, path);
                     }
                 }
             }
         }).start();
+    }
+
+    /*ÃÏ∆¯Õº∆¨œ¬‘ÿ*/
+    public static void downWeatherPicture(String picPath, String path, String filename) {
+        try {
+            URL url = new URL(picPath);
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            InputStream inputStream = httpURLConnection.getInputStream();
+
+            byte buffer[] = new byte[4 * 1024];
+            File fileDir = new File(Environment.getExternalStorageDirectory() + "/" + path);
+            fileDir.mkdir();
+
+            File file = new File(Environment.getExternalStorageDirectory() + "/" + path + "/" + filename);
+            if (file.exists()){
+                return;
+            }
+            Log.v("FILE",file.getAbsolutePath());
+            file.createNewFile();
+            OutputStream outputStream = new FileOutputStream(file);
+            while ((inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer);
+            }
+            outputStream.flush();
+        } catch (Exception e) {
+
+        }
     }
 }

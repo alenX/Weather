@@ -85,9 +85,17 @@ public class Utils {
             String weatherCode = weatherInfo.getString("cityid");
             String temp1 = weatherInfo.getString("temp1");
             String temp2 = weatherInfo.getString("temp2");
+            String img1 = weatherInfo.getString("img1");
+            String img2 = weatherInfo.getString("img2");
             String weatherDesp = weatherInfo.getString("weather");
             String publishTime = weatherInfo.getString("ptime");
-            saveWeatherInfo(context, cityName, weatherCode, temp1, temp2, weatherDesp, publishTime, countyCode);
+            saveWeatherInfo(context, cityName, weatherCode, temp1, temp2, weatherDesp, publishTime, countyCode,img1,img2);
+
+
+            String weatherImg1 =weatherInfo.getString("img1");
+            String weatherImg2 =weatherInfo.getString("img2");
+            HttpUtils.downWeatherPicture("http://m.weather.com.cn/img/"+weatherImg1,"Test",weatherImg1);
+            HttpUtils.downWeatherPicture("http://m.weather.com.cn/img/"+weatherImg2,"Test",weatherImg2);
 
             /*同时将信息保存到离线城市信息表中*/
             OfflineCounty offlineCounty = new OfflineCounty();
@@ -113,9 +121,11 @@ public class Utils {
             String weatherCode = weatherInfo.getString("cityid");
             String temp1 = weatherInfo.getString("temp1");
             String temp2 = weatherInfo.getString("temp2");
+            String img1 = weatherInfo.getString("img1");
+            String img2 = weatherInfo.getString("img2");
             String weatherDesp = weatherInfo.getString("weather");
             String publishTime = weatherInfo.getString("ptime");
-            saveWeatherInfo(context, cityName, weatherCode, temp1, temp2, weatherDesp, publishTime, countyCode);
+            saveWeatherInfo(context, cityName, weatherCode, temp1, temp2, weatherDesp, publishTime, countyCode,img1,img2);
 
             /*同时将信息保存到离线城市信息表中*//*
             OfflineCounty offlineCounty = new OfflineCounty();
@@ -132,7 +142,7 @@ public class Utils {
 
 
     public static void saveWeatherInfo(Context context, String cityName, String weatherCode,
-                                       String temp1, String temp2, String weatherDesp, String publishTime, String countyCode) {
+                                       String temp1, String temp2, String weatherDesp, String publishTime, String countyCode,String img1,String img2) {
 
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年M月d日", Locale.CHINA);
@@ -142,6 +152,8 @@ public class Utils {
         editor.putString("weather_code", weatherCode);
         editor.putString("temp1", temp1);
         editor.putString("temp2", temp2);
+        editor.putString("img1", img1);
+        editor.putString("img2", img2);
         editor.putString("weatherDesp", weatherDesp);
         editor.putString("publish_time", publishTime);
         editor.putString("current_date", sdf.format(new Date()));

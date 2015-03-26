@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -25,6 +26,9 @@ import org.alenx.weather.Utils.HttpUtils;
 import org.alenx.weather.Utils.IHttpRequestListener;
 import org.alenx.weather.Utils.Utils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class WeatherShowAct extends Activity implements View.OnClickListener {
@@ -35,6 +39,9 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
     TextView mWeatherDespText;
     TextView mTemp1Text;
     TextView mTemp2Text;
+
+    TextView mImg1Text;
+    TextView mImg2Text;
     TextView mCurrentDateText;
     Button mSwitchButton;
     Button mRefreshButton;
@@ -64,6 +71,9 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
         mWeatherDespText = (TextView) findViewById(R.id.weather_desp);
         mTemp1Text = (TextView) findViewById(R.id.temp1);
         mTemp2Text = (TextView) findViewById(R.id.temp2);
+        mImg1Text = (TextView) findViewById(R.id.img1);
+        mImg2Text = (TextView) findViewById(R.id.img2);
+
         mCurrentDateText = (TextView) findViewById(R.id.current_date);
 
         mSwitchButton = (Button) findViewById(R.id.switch_city);
@@ -291,9 +301,25 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
 //        mCityNameText.setText(county_name_title);
         mTemp1Text.setText(sp.getString("temp1", ""));
         mTemp2Text.setText(sp.getString("temp2", ""));
+
         mWeatherDespText.setText(sp.getString("weatherDesp", ""));
         mPublishText.setText("今天" + sp.getString("publish_time", "") + "发布");
         mCurrentDateText.setText(sp.getString("current_date", ""));
+        try {
+//            File file = new File("mnt/sdcard/Test/"+sp.getString("img1",""));
+            File file = new File("mnt/sdcard/Test/" + sp.getString("img1",""));
+            InputStream inputStream = new FileInputStream(file);
+            BitmapDrawable bitmapDrawable = new BitmapDrawable(inputStream);
+            mImg1Text.setBackground(bitmapDrawable);
+
+            file = new File("mnt/sdcard/Test/" + sp.getString("img2",""));
+            inputStream = new FileInputStream(file);
+            bitmapDrawable = new BitmapDrawable(inputStream);
+            mImg2Text.setBackground(bitmapDrawable);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         weatherLayout.setVisibility(View.VISIBLE);
         mCityNameText.setVisibility(View.VISIBLE);
