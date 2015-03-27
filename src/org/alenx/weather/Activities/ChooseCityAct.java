@@ -119,7 +119,7 @@ public class ChooseCityAct extends Activity {
                         //可以将县存放，保存多个地区供选择，避免每次进入时选择,增加单一收藏夹功能
                         //TODO 多个地区的支持
                         AlertDialog.Builder ab = new AlertDialog.Builder(ChooseCityAct.this);
-                        ab.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        ab.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 final County county = arrCounty.get(position);
@@ -151,6 +151,7 @@ public class ChooseCityAct extends Activity {
                                                         Toast.makeText(getApplicationContext(), "系统已经存在五个收藏的城市，无法继续收藏", Toast.LENGTH_SHORT).show();
                                                     } else {
                                                         dbHelp.saveCacheCounty(cacheCounty);
+                                                        Toast.makeText(getApplicationContext(), "收藏成功！", Toast.LENGTH_SHORT).show();
                                                     }
                                                 }
 
@@ -166,12 +167,12 @@ public class ChooseCityAct extends Activity {
 
 
                             }
-                        }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
-                        }).setTitle("是否加入收藏？").show();
+                        }).setTitle(R.string.isFavour).show();
 
 
                     }
@@ -195,7 +196,7 @@ public class ChooseCityAct extends Activity {
             }
             adapter.notifyDataSetChanged();
             listView.setSelection(0);
-            title_text.setText("中国");
+            title_text.setText(R.string.china);
             current_level = LEVEL_PROVINCE;
         }
     }
@@ -279,7 +280,7 @@ public class ChooseCityAct extends Activity {
                     @Override
                     public void run() {
                         closeProgressDialog();
-                        Toast.makeText(ChooseCityAct.this, "失败", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ChooseCityAct.this, R.string.failure, Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -290,7 +291,7 @@ public class ChooseCityAct extends Activity {
     public void showProgressDialog() {
         if (pd == null) {
             pd = new ProgressDialog(this);
-            pd.setMessage("正在加载中...");
+            pd.setMessage(R.string.loading + "");
             pd.setCanceledOnTouchOutside(false);
         }
         pd.show();

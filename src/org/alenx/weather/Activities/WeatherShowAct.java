@@ -90,7 +90,7 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
         Log.v("WeatherShowAct", county_name_title);
 
         if (!TextUtils.isEmpty(countyCode)) {
-            mPublishText.setText("正在同步...");
+            mPublishText.setText(R.string.syncing);
             weatherLayout.setVisibility(View.INVISIBLE);
             mCityNameText.setVisibility(View.INVISIBLE);
             queryWeatherCode(countyCode);
@@ -178,11 +178,11 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
             startActivity(intent);*/
 
             pd = new ProgressDialog(WeatherShowAct.this);
-            pd.setMessage("正在加载中...");
+            pd.setMessage(R.string.loading + "");
             pd.setCanceledOnTouchOutside(false);
             pd.show();
-            mPublishText.setText("正在同步...");
-            mCityNameText.setText("正在同步...");
+            mPublishText.setText(R.string.syncing);
+            mCityNameText.setText(R.string.syncing);
             queryWeatherCode(aCacheCounties.get(num).getCountyCode());
             return true;
         }
@@ -206,7 +206,7 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
                 finish();
                 break;
             case R.id.refresh_weather:
-                mPublishText.setText("同步中...");
+                mPublishText.setText(R.string.syncing);
                 SharedPreferences spf = PreferenceManager.getDefaultSharedPreferences(this);
                 String weatherCode = spf.getString("weather_code", "");
                 if (!TextUtils.isEmpty(weatherCode)) {
@@ -267,7 +267,7 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mPublishText.setText("同步失败");
+                            mPublishText.setText(R.string.sync_failure);
                         }
                     });
                 } else {
@@ -276,7 +276,7 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                mPublishText.setText("同步失败");
+                                mPublishText.setText(R.string.sync_failure);
                             }
                         });
                     } else {
@@ -307,12 +307,12 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
         mCurrentDateText.setText(sp.getString("current_date", ""));
         try {
 //            File file = new File("mnt/sdcard/Test/"+sp.getString("img1",""));
-            File file = new File("mnt/sdcard/Test/" + sp.getString("img1",""));
+            File file = new File("mnt/sdcard/Test/" + sp.getString("img1", ""));
             InputStream inputStream = new FileInputStream(file);
             BitmapDrawable bitmapDrawable = new BitmapDrawable(inputStream);
             mImg1Text.setBackground(bitmapDrawable);
 
-            file = new File("mnt/sdcard/Test/" + sp.getString("img2",""));
+            file = new File("mnt/sdcard/Test/" + sp.getString("img2", ""));
             inputStream = new FileInputStream(file);
             bitmapDrawable = new BitmapDrawable(inputStream);
             mImg2Text.setBackground(bitmapDrawable);

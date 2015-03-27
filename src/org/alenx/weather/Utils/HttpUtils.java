@@ -38,7 +38,7 @@ public class HttpUtils {
         }).start();
     }
 
-    /*ÌìÆøÍ¼Æ¬ÏÂÔØ*/
+    /*ç¦»çº¿å›¾ç‰‡ä¸‹è½½*/
     public static void downWeatherPicture(String picPath, String path, String filename) {
         try {
             URL url = new URL(picPath);
@@ -50,10 +50,10 @@ public class HttpUtils {
             fileDir.mkdir();
 
             File file = new File(Environment.getExternalStorageDirectory() + "/" + path + "/" + filename);
-            if (file.exists()){
+            if (file.exists()) {
                 return;
             }
-            Log.v("FILE",file.getAbsolutePath());
+            Log.v("FILE", file.getAbsolutePath());
             file.createNewFile();
             OutputStream outputStream = new FileOutputStream(file);
             while ((inputStream.read(buffer)) != -1) {
