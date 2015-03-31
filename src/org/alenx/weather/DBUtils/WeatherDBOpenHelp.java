@@ -8,14 +8,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class WeatherDBOpenHelp extends SQLiteOpenHelper {
 
     /**
-     *  Province表建表语句
+     * Province表建表语句
      */
     public static final String CREATE_PROVINCE = "create table Province ("
             + "id integer primary key autoincrement, "
             + "province_name text, "
             + "province_code text)";
     /**
-     *  City表建表语句
+     * City表建表语句
      */
     public static final String CREATE_CITY = "create table City ("
             + "id integer primary key autoincrement, "
@@ -23,7 +23,7 @@ public class WeatherDBOpenHelp extends SQLiteOpenHelper {
             + "city_code text, "
             + "province_id integer)";
     /**
-     *  County表建表语句
+     * County表建表语句
      */
     public static final String CREATE_COUNTY = "create table County ("
             + "id integer primary key autoincrement, "
@@ -33,7 +33,7 @@ public class WeatherDBOpenHelp extends SQLiteOpenHelper {
 
 
     /*CacheCounty建表sql*/
-    public static final String CREATE_CACHE_COUNTY ="create table CacheCounty ("
+    public static final String CREATE_CACHE_COUNTY = "create table CacheCounty ("
             + "id integer primary key autoincrement, "
             + "num integer,"
             + "county_code text, "
@@ -42,7 +42,7 @@ public class WeatherDBOpenHelp extends SQLiteOpenHelper {
 
 
     /*OfflineCounty表建表sql*/
-    public static final String CREATE_OFFLINE_COUNTY ="create table OfflineCounty ("
+    public static final String CREATE_OFFLINE_COUNTY = "create table OfflineCounty ("
             + "id integer primary key autoincrement, "
             + "city_id text,"
             + "county_code text, "
@@ -70,6 +70,11 @@ public class WeatherDBOpenHelp extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        db.execSQL("drop table  if exists Province ");
+        db.execSQL("drop table  if exists City ");
+        db.execSQL("drop table  if exists County ");
+        db.execSQL("drop table  if exists CacheCounty ");
+        db.execSQL("drop table  if exists OfflineCounty ");
+        onCreate(db);
     }
 }
