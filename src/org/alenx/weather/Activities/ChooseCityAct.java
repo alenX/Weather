@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.XmlResourceParser;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -22,8 +23,13 @@ import org.alenx.weather.R;
 import org.alenx.weather.Utils.HttpUtils;
 import org.alenx.weather.Utils.IHttpRequestListener;
 import org.alenx.weather.Utils.Utils;
+import org.xmlpull.v1.XmlPullParser;
 
+import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.logging.Logger;
 
 public class ChooseCityAct extends Activity {
 
@@ -58,6 +64,9 @@ public class ChooseCityAct extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);//TODO
         setContentView(R.layout.choosecity);
+        getCitiesInfo();
+
+
 
         dbHelp = WeatherDBHelp.getInstance(this);
 
@@ -67,6 +76,9 @@ public class ChooseCityAct extends Activity {
 
 
         boolean isFromWeatherDetail = getIntent().getBooleanExtra("from_weather_act", false);
+
+
+//        Socket socket = new Socket();
 
 
         if (!TextUtils.isEmpty(cacheCountyCode) && !isFromWeatherDetail) {
@@ -300,6 +312,43 @@ public class ChooseCityAct extends Activity {
     public void closeProgressDialog() {
         if (pd != null) {
             pd.dismiss();
+        }
+    }
+
+
+    public void getCitiesInfo(){
+        XmlResourceParser xrp = getResources().getXml(R.xml.chinacities);
+
+        try {
+          while (xrp.getEventType()!= XmlPullParser.END_DOCUMENT){
+              HashMap<String,List<HashMap<String,List>>> hashMap = new HashMap<String, List<HashMap<String, List>>>();
+              List<HashMap<String,List>> list = new ArrayList<HashMap<String, List>>();
+              HashMap<String,List> map = new HashMap<String, List>();
+              List codeList = new ArrayList();
+              if (xrp.getEventType()==XmlPullParser.START_TAG){
+                  String tagName = xrp.getName();
+
+                  String pName = "";
+                  String cName = "";
+                  if (tagName.equals("province")){
+                      Log.d("aa",xrp.getAttributeValue(null,"id"));
+                      pName = xrp.getAttributeValue(null,"name");
+                  }else if(tagName.equals("city")){
+                      Log.d("bb",xrp.getAttributeValue(null,"id"));
+                      cName= xrp.getAttributeValue(null,"name");
+                  }else if(tagName.equals("county")){
+                      Log.d("cc",xrp.getAttributeValue(null,"id"));
+                      Log.d("cc",xrp.getAttributeValue(null,"weatherCode"));
+                      codeList.add(xrp.getAttributeValue(null,"name"));
+                  }
+
+              }
+              xrp.next();
+
+
+          }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 }

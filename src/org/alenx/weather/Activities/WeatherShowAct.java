@@ -262,6 +262,7 @@ public class WeatherShowAct extends Activity implements View.OnClickListener {
 
                 }*/
                 //http://www.weather.com.cn/data/cityinfo/101300103.html
+                //TODO 长度校验
                 String weatherCode = path.contains("cityinfo") ? path.split("\\.")[3].split("\\/")[4] : "";
                 if (TextUtils.isEmpty(weatherCode)) {
                     runOnUiThread(new Runnable() {

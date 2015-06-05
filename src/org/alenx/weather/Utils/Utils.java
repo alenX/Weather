@@ -160,4 +160,9 @@ public class Utils {
         editor.putString("county_code", countyCode);
         editor.commit();
     }
+
+
+    public void getCities(){
+
+    }
 }
