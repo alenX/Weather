@@ -50,11 +50,11 @@ public class WeatherAutoUpdateSer extends Service {
 
         //TODO
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        int hour = 8 * 60 * 60 * 1000;
+        int hour = 3*1000;//3s
         long time = SystemClock.elapsedRealtime() + hour;
         Intent i = new Intent(this, WeatherAutoUpdateRec.class);
-//        PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, time, pi);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, i, 0);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, time, pendingIntent);
         return super.onStartCommand(i, flags, startId);
     }
 
