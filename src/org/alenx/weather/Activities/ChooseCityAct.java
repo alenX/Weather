@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -260,6 +261,7 @@ public class ChooseCityAct extends Activity {
             address = "http://www.weather.com.cn/data/list3/city.xml";
         }
         showProgressDialog();
+
         HttpUtils.sendHttpRequest(address, new IHttpRequestListener() {
             @Override
             public void onExecute(String response) {
@@ -271,7 +273,6 @@ public class ChooseCityAct extends Activity {
                 } else if ("cc".equals(type)) {
                     result = Utils.handleCounty(dbHelp, response, selectedCity.getId());
                 }
-
                 if (result) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -307,7 +308,8 @@ public class ChooseCityAct extends Activity {
     public void showProgressDialog() {
         if (pd == null) {
             pd = new ProgressDialog(this);
-            pd.setMessage(R.string.loading + "");
+            pd.setMessage(getApplicationContext().getString(R.string.loading));//Int的切换
+            pd.setTitle("等待");
             pd.setCanceledOnTouchOutside(false);
         }
         pd.show();
