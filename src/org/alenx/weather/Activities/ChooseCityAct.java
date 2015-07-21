@@ -3,6 +3,7 @@ package org.alenx.weather.Activities;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,7 +12,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.*;
 import org.alenx.weather.DBUtils.WeatherDBHelp;
@@ -93,6 +96,7 @@ public class ChooseCityAct extends Activity {
             title_text = (TextView) findViewById(R.id.title_text);
             adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dataList);
             listView.setAdapter(adapter);
+//            listView.setAdapter(new CityAdapter(dataList,this));
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -351,4 +355,60 @@ public class ChooseCityAct extends Activity {
             e.printStackTrace();
         }
     }
+
+    class CityAdapter extends BaseAdapter{
+
+        private ArrayList<String> cities=null;
+        private Context context=null;
+
+
+        public CityAdapter(ArrayList<String> cities, Context context) {
+            this.cities = cities;
+            this.context = context;
+        }
+
+        @Override
+        public int getCount() {
+            return cities.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return cities.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            ViewHolder item = null;
+
+            if (convertView==null){
+                convertView = LayoutInflater.from(context).inflate(R.layout.city_list_item,null);
+
+                item = new ViewHolder();
+                item.city_name_item=(TextView)convertView.findViewById(R.id.city_name_item);
+                item.city_name_tips=(TextView)convertView.findViewById(R.id.city_name_tips);
+//                item.city_name_tips = ""
+                convertView.setTag(item);
+            }else{
+                item = (ViewHolder)convertView.getTag();
+            }
+
+            item.city_name_tips.setText("城市");
+            item.city_name_item.setText(cities.get(position));
+            return convertView;
+        }
+    }
+
+    class ViewHolder{
+        public TextView city_name_item;
+        public TextView city_name_tips ;
+
+    }
 }
+
